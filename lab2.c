@@ -13,8 +13,8 @@ int** read_board_from_file(char* filename){
     }
 
     fp = fopen(filename,"r");
-    for(int i = 0; i < 9; i++) {
-        for(int j = 0; j < 9; j++) {
+    for(int i = 0; i < ROW_SIZE; i++) {
+        for(int j = 0; j < COL_SIZE; j++) {
             fscanf(fp, "%d%*c", &sudoku_board[i][j]);
         }
     }
@@ -32,10 +32,10 @@ void *valid_line(void* parameters)
 
     if (is_row && !is_col) {
         int row = p -> starting_row;
-        for(int i = 0; i< 9; i++)
+        for(int i = 0; i< ROW_SIZE; i++)
         {
             int target = sudoku_board[row][i];
-            if (target > 9 || target < 1 || validation_array[target - 1]==1)
+            if (target > ROW_SIZE || target < 1 || validation_array[target - 1]==1)
             {
                 pthread_exit(NULL);
             }
@@ -43,15 +43,15 @@ void *valid_line(void* parameters)
                 validation_array[target - 1] = 1;
             }
         }
-        worker_validation[9+row] = 1;
+        worker_validation[ROW_SIZE+row] = 1;
         pthread_exit(NULL);
 
     } else if (is_col && !is_row) {
         int col = p -> starting_col;
-        for(int i = 0; i< 9; i++)
+        for(int i = 0; i< ROW_SIZE; i++)
         {
             int target = sudoku_board[i][col];
-            if (target > 9 || target < 1 || validation_array[target - 1]==1)
+            if (target > ROW_SIZE || target < 1 || validation_array[target - 1]==1)
             {
                 pthread_exit(NULL);
             }
@@ -59,7 +59,7 @@ void *valid_line(void* parameters)
                 validation_array[target - 1] = 1;
             }
         }
-        worker_validation[18+col] = 1;
+        worker_validation[ROW_SIZE*2+col] = 1;
         pthread_exit(NULL);
     } else {
         return 0;
@@ -69,7 +69,7 @@ void *valid_line(void* parameters)
 void *valid_3x3(void* parameters)
 {
     param_struct *p = (param_struct*) parameters;
-    int validation_array[9] = {0};
+    int validation_array[ROW_SIZE] = {0};
     int row = p -> starting_row;
     int col = p -> starting_col;
 
@@ -77,9 +77,8 @@ void *valid_3x3(void* parameters)
         for(int j = col; j<col + 3; j++)
         {
             int target = sudoku_board[i][j];
-            if (target > 9 || target < 1 || validation_array[target - 1]==1)
+            if (target > ROW_SIZE || target < 1 || validation_array[target - 1]==1)
             {
-                printf("[3x3] Problem at Row: %d Column: %d\n", i+1,j+1);
                 pthread_exit(NULL);
             }
             else{
@@ -93,7 +92,7 @@ void *valid_3x3(void* parameters)
 }
 
 int is_board_valid() {
-    pthread_t *tid;  /* the thread identifiers */
+    pthread_t *tid;
     pthread_attr_t attr;
     param_struct *parameter;
     int threadIndex = 0;
