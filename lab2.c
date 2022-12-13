@@ -66,7 +66,7 @@ void *valid_line(void* parameters)
     }
 }
 
-void *valid_3x3(void* parameters)
+void *valid_box(void* parameters)
 {
     param_struct *p = (param_struct*) parameters;
     int validation_array[ROW_SIZE] = {0};
@@ -102,10 +102,10 @@ int is_board_valid() {
     for (int i = 0; i < ROW_SIZE; i++) {
         for (int j = 0; j < COL_SIZE; j++) {
             if (i % 3 == 0 && j % 3 == 0) {
-                param_struct *worker3x3 = (param_struct *) malloc(sizeof(param_struct));
-                worker3x3->starting_row = i;
-                worker3x3->starting_col = j;
-                pthread_create(&tid[threadIndex++], NULL, valid_3x3, worker3x3);
+                param_struct *workerBox = (param_struct *) malloc(sizeof(param_struct));
+                workerBox->starting_row = i;
+                workerBox->starting_col = j;
+                pthread_create(&tid[threadIndex++], NULL, valid_box, workerBox);
             }
             if (i == 0) {
                 param_struct *workerColumn = (param_struct *) malloc(sizeof(param_struct));
