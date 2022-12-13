@@ -93,8 +93,6 @@ void *valid_box(void* parameters)
 
 int is_board_valid() {
     pthread_t *tid;
-    pthread_attr_t attr;
-    param_struct *parameter;
     int threadIndex = 0;
     worker_validation = (int *) malloc(sizeof(int) * NUM_OF_THREADS);
     tid = (pthread_t *) malloc(sizeof(int) * NUM_OF_THREADS);
@@ -107,19 +105,19 @@ int is_board_valid() {
                 workerBox->starting_col = j;
                 pthread_create(&tid[threadIndex++], NULL, valid_box, workerBox);
             }
-            if (i == 0) {
-                param_struct *workerColumn = (param_struct *) malloc(sizeof(param_struct));
-                workerColumn->starting_row = i;
-                workerColumn->starting_col = j;
-                workerColumn->is_column = 1;
-                pthread_create(&tid[threadIndex++], NULL, valid_line, workerColumn);
-            }
             if (j == 0) {
                 param_struct *workerRow = (param_struct *) malloc(sizeof(param_struct));
                 workerRow->starting_row = i;
                 workerRow->starting_col = j;
                 workerRow->is_row = 1;
                 pthread_create(&tid[threadIndex++], NULL, valid_line, workerRow);
+            }
+            if (i == 0) {
+                param_struct *workerColumn = (param_struct *) malloc(sizeof(param_struct));
+                workerColumn->starting_row = i;
+                workerColumn->starting_col = j;
+                workerColumn->is_column = 1;
+                pthread_create(&tid[threadIndex++], NULL, valid_line, workerColumn);
             }
 
         }
