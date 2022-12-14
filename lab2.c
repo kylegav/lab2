@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "lab2.h"
 
-
+//Included in lab2.h
 int** read_board_from_file(char* filename){
 
     FILE *fp = NULL;
@@ -22,8 +22,8 @@ int** read_board_from_file(char* filename){
     fclose(fp);
     return sudoku_board;
 }
-
-void *valid_line(void* parameters)
+//Not included in lab2.h
+void *check_valid_line(void* parameters)
 {
     param_struct *p = (param_struct*) parameters;
     int validation_array[ROW_SIZE] = {0};
@@ -65,8 +65,8 @@ void *valid_line(void* parameters)
         return 0;
     }
 }
-
-void *valid_box(void* parameters)
+// Not included in lab2.h
+void *check_valid_box(void* parameters)
 {
     param_struct *p = (param_struct*) parameters;
     int validation_array[ROW_SIZE] = {0};
@@ -90,7 +90,7 @@ void *valid_box(void* parameters)
     pthread_exit(NULL);
 
 }
-
+// Included in lab2.h
 int is_board_valid() {
     pthread_t *tid;
     int threadIndex = 0;
@@ -100,24 +100,24 @@ int is_board_valid() {
     for (int i = 0; i < ROW_SIZE; i++) {
         for (int j = 0; j < COL_SIZE; j++) {
             if (i % 3 == 0 && j % 3 == 0) {
-                param_struct *workerBox = (param_struct *) malloc(sizeof(param_struct));
-                workerBox->starting_row = i;
-                workerBox->starting_col = j;
-                pthread_create(&tid[threadIndex++], NULL, valid_box, workerBox);
+                param_struct *worker_box = (param_struct *) malloc(sizeof(param_struct));
+                worker_box->starting_row = i;
+                worker_box->starting_col = j;
+                pthread_create(&tid[threadIndex++], NULL, check_valid_box, worker_box);
             }
             if (j == 0) {
-                param_struct *workerRow = (param_struct *) malloc(sizeof(param_struct));
-                workerRow->starting_row = i;
-                workerRow->starting_col = j;
-                workerRow->is_row = 1;
-                pthread_create(&tid[threadIndex++], NULL, valid_line, workerRow);
+                param_struct *worker_row = (param_struct *) malloc(sizeof(param_struct));
+                worker_row->starting_row = i;
+                worker_row->starting_col = j;
+                worker_row->is_row = 1;
+                pthread_create(&tid[threadIndex++], NULL, check_valid_line, worker_row);
             }
             if (i == 0) {
-                param_struct *workerColumn = (param_struct *) malloc(sizeof(param_struct));
-                workerColumn->starting_row = i;
-                workerColumn->starting_col = j;
-                workerColumn->is_column = 1;
-                pthread_create(&tid[threadIndex++], NULL, valid_line, workerColumn);
+                param_struct *worker_col = (param_struct *) malloc(sizeof(param_struct));
+                worker_col->starting_row = i;
+                worker_col->starting_col = j;
+                worker_col->is_column = 1;
+                pthread_create(&tid[threadIndex++], NULL, check_valid_line, worker_col);
             }
 
         }
