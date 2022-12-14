@@ -125,14 +125,11 @@ int is_board_valid() {
 
     for (int i = 0; i < NUM_OF_THREADS; i++) {
         pthread_join(tid[i], NULL);
-    }
-
-    for (int i = 0; i < NUM_OF_THREADS; i++) {
         if (worker_validation[i] == 0) {
             return 0;
         }
-
     }
+
     free(worker_validation);
     free(tid);
     return 1;
