@@ -11,8 +11,6 @@ typedef struct {
     int id;
     int starting_row;
     int starting_col;
-    int ending_row;
-    int ending_col;
     int is_column;
     int is_row;
 } param_struct;

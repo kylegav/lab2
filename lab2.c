@@ -108,13 +108,11 @@ int is_board_valid() {
             if (j == 0) {
                 param_struct *worker_row = (param_struct *) malloc(sizeof(param_struct));
                 worker_row->starting_row = i;
-                worker_row->starting_col = j;
                 worker_row->is_row = 1;
                 pthread_create(&tid[threadIndex++], NULL, check_valid_line, worker_row);
             }
             if (i == 0) {
                 param_struct *worker_col = (param_struct *) malloc(sizeof(param_struct));
-                worker_col->starting_row = i;
                 worker_col->starting_col = j;
                 worker_col->is_column = 1;
                 pthread_create(&tid[threadIndex++], NULL, check_valid_line, worker_col);
